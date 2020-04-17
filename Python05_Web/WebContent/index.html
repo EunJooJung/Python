@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+	
+	onclick = function(){
+		// flask server에 요청하여, json받아서, table에 뿌리자.
+		$.ajax({
+			url:"http://localhost:8585/crawling",
+			type:"POST",
+			dataType:"json",
+			success: function(res_json) {
+				
+					$.each(res_json, function(key, val){
+						if(key == 'movies'){ 
+							val.sort(function(a,b){
+								return b.star - a.star;
+							});
+							
+							for(var i = 0; i <val.length; i++){
+								var $tr = $("<tr>");
+								for(var j in val[i]){
+									$tr.append($("<td>").html(val[i][j]));
+								}
+								$("tbody").append($tr);
+							}
+						}
+					});	
+				 $("#tbody").append(res_json);
+			
+			},
+			
+			error : function(xhr, status, error){
+				alert("통신 실패")
+			}	
+		})
+		
+	}
+
+</script>
+
+</head>
+<body>
+
+	<table border="1">
+		<thead>
+			<tr>
+				<th>TITLE</th>
+				<th>STAR</th>
+			</tr>
+		</thead>
+		<tbody id="tbody"></tbody>
+	</table>
+
+</body>
+</html>
